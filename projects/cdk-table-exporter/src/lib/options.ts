@@ -2,6 +2,7 @@ import { WritingOptions } from 'xlsx';
 
 export interface Options {
   fileName ?: string;
+  clipboard ?: boolean;
 }
 
 export interface TxtOptions extends Options {

@@ -1,9 +1,13 @@
-import { FileUtil } from '../../util/file-util';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { inject } from '@angular/core';
 import { Mime } from '../../mime';
-import { Exporter } from './exporter';
 import { Options } from '../../options';
+import { FileUtil } from '../../util/file-util';
+import { Exporter } from './exporter';
 
 export abstract class FileExporter<T extends Options> implements Exporter<T> {
+  private _clipboard = inject(Clipboard);
+  
   constructor() {}
 
   public export(rows: Array<any>, options?: T) {
@@ -12,7 +16,13 @@ export abstract class FileExporter<T extends Options> implements Exporter<T> {
     }
     const mimeType = this.getMimeType();
     this.createContent(rows, options).then(content => {
-      FileUtil.save(content, mimeType, options);
+      if (options?.clipboard) {
+        this._clipboard.copy(content);
+      }
+      else
+      {
+        FileUtil.save(content, mimeType, options);
+      }
     });
   }
 
